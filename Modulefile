@@ -1,5 +1,5 @@
 name    'andschwa-person'
-version '0.0.1'
+version '0.0.2'
 source  'git://github.com/andschwa/puppet-person.git'
 author  'Andrew Schwartzmeyer'
 license 'MIT License'
