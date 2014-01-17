@@ -1,5 +1,7 @@
 class person::configurations {
 
+  require person::user
+
   dotfiles { $person::person: 
     source => $person::dotfiles_repo,
   }
