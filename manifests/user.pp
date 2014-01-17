@@ -21,20 +21,4 @@ class person::user {
     owner   => $person::person,
     require => User[$person::person],
   }
-
-  $nopwsudoers = {
-    'nopassword' => {
-      ensure  => present,
-      comment => 'Users without sudo password prompt',
-      users   => $person::groups,
-      runas   => [ 'root' ],
-      cmnds   => [ 'ALL' ],
-      tags    => [ 'NOPASSWD', 'SETENV' ],
-    }
-  }
-
-  class { 'sudo':
-    manage_sudoersd => true,
-    sudoers         => $nopwsudoers,
-  }
 }
