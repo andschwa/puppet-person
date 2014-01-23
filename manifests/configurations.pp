@@ -22,21 +22,37 @@ class person::configurations {
     path     => "${person::home}/${person::fresh_path}",
     revision => 'master',
     user     => $person::person,
-  } -> file { 'freshrc': 
+  }
+
+  file { "${person::home}_freshrc": 
     ensure    => link,
     owner     => $person::person,
     group     => $person::person,
     path      => "${person::home}/.freshrc",
     target    => "${person::home}/.dotfiles/fresh/freshrc",
-    require   => Dotfiles[$person::person]
-  } -> file { "${person::person}::bashrc":
-    ensure => absent,
-    path   => "${person::home}/.bashrc",
-  } -> exec { "${person::person}::fresh_install":
+    require   => [ Dotfiles[$person::person],
+                   Vcsrepo["${person::person}::fresh"] ],
+  }
+
+  # modeled as exec for refreshonly, removes bashrc for fresh install
+  exec { "${person::home}_rm_bashrc":
+    command     => "/usr/bin/rm ${person::home}/.bashrc",
+    cwd         => $person::home,
+    environment => "HOME=${person::home}",
+    user        => $person::person,
+    refreshonly => true,
+    subscribe   => File["${person::home}_freshrc"],
+    before      => Exec["${person::person}::fresh_install"],
+  }
+
+  exec { "${person::person}::fresh_install":
     command     => "${person::home}/${person::fresh_path}/bin/fresh install",
     cwd         => $person::home,
     environment => "HOME=${person::home}",
     user        => $person::person,
+    refreshonly => true,
+    subscribe   => Exec["${person::home}_rm_bashrc"],
+    before      => Exec["${person::person}::fresh_update"],
   }
 
   exec { "${person::person}::fresh_update":
@@ -45,6 +61,5 @@ class person::configurations {
     environment => "HOME=${person::home}",
     user        => $person::person,
     subscribe   => Dotfiles[$person::person],
-    require     => Exec["${person::person}::fresh_install"],
   }
 }
