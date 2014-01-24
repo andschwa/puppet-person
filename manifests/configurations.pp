@@ -36,7 +36,7 @@ class person::configurations {
 
   # modeled as exec for refreshonly, removes bashrc for fresh install
   exec { "${person::home}_rm_bashrc":
-    command     => "/usr/bin/rm ${person::home}/.bashrc",
+    command     => "/bin/rm ${person::home}/.bashrc",
     cwd         => $person::home,
     environment => "HOME=${person::home}",
     user        => $person::person,
