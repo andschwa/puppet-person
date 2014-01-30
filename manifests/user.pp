@@ -11,7 +11,7 @@ class person::user {
     groups     => $person::groups,
     home       => $person::home,
     managehome => true,
-    password   => $person::password,
+    password   => sha1($person::password),
     shell      => '/usr/bin/zsh',
     require    => [ Group[$person::groups], Package['zsh'] ],
   }
