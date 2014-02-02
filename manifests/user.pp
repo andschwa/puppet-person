@@ -4,6 +4,8 @@ class person::user {
     ensure => present,
   }
 
+  ensure_packages([ 'zsh' ])
+
   user { $person::person:
     ensure     => present,
     comment    => $person::fullname,
