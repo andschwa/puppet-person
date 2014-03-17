@@ -33,40 +33,25 @@ define person(
   }
 
   if $use_vcsh {
-    package { [ 'vcsh', 'mr' ]:
+    package { ['vcsh', 'mr']:
       ensure => installed,
     }
 
-    vcsrepo { "${user}_dotfiles":
-      ensure   => latest,
-      source   => $repo,
-      path     => $path,
-      provider => git,
-      user     => "${user}/.dotfiles",
+    Exec {
+      path => '/usr/bin',
+      user => $user,
+      cwd  => $home,
     }
 
-    $configdir ="${home}/.config"
-    $mrconfig = "${home}/.mrconfig"
-
-    File {
-      ensure  => link,
-      require => Vcsrepo["${user}_dotfiles"],
-      before  => Exec["${user}_mr_update"],
-    }
-
-    file { $configdir:
-      content => "${path}/.mrconfig",
-    }
-
-    file { $mrconfig:
-      content => "${path}/.config",
+    exec { "${user}_vcsh_clone_mr":
+      command => "vcsh clone ${path}",
+      creates => "${home}/.mrconfig",
+      require => Package['vcsh'],
     }
 
     exec { "${user}_mr_update":
       command => "mr update",
-      path    => "/usr/bin",
-      user    => $user,
-      require => Package['mr'],
+      require => [ Package['mr'], Exec["${user}_vcsh_clone_mr"] ],
     }
   }
 }
