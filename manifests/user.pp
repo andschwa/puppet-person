@@ -5,12 +5,12 @@ define person::user(
   $home        = "/home/${title}",
   $manage_home = true,
   $packages    = [],
-  $password    = "plaintext",
-  $shell       = "/usr/bin/bash",
+  $password    = 'plaintext',
+  $shell       = '/usr/bin/bash',
 
   # vcsh config setup
-  $repo,
-  $provider    = git) {
+  $repo        = undef
+  ) {
 
   include person
 
@@ -22,17 +22,17 @@ define person::user(
 
   user { $user:
     ensure     => present,
-    comment    => "${fullname}",
+    comment    => $fullname,
     gid        => $user,
     groups     => $groups,
     home       => $home,
     managehome => $manage_home,
-    password   => sha1($password),
+    password   => $password,
     shell      => $shell,
     require    => [ Group[$groups] ],
   }
 
-  if $person::manage_vcsh {
+  if $person::manage_vcsh and $repo != undef {
 
     Exec {
       path        => ['/bin', '/usr/bin'],
@@ -48,7 +48,7 @@ define person::user(
     }
 
     exec { "${user}_mr_update":
-      command => "mr update",
+      command => 'mr update',
       require => [ Package['mr'], Exec["${user}_vcsh_clone_mr"] ],
     }
   }
