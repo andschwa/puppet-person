@@ -39,7 +39,6 @@ define person::user(
     managehome => $manage_home,
     password   => $password,
     shell      => $shell,
-    require    => [ Group[$groups] ],
   }
 
   if $person::manage_vcsh and $repo != undef {
