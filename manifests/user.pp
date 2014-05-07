@@ -1,21 +1,30 @@
 define person::user(
-  $user        = $title,
-  $fullname    = $title,
-  $groups      = $title,
-  $home        = "/home/${title}",
-  $manage_home = true,
-  $packages    = [],
-  $password    = 'plaintext',
-  $shell       = '/usr/bin/bash',
+  $user          = $title,
+  $fullname      = $title,
+  $groups        = $title,
   $make_groups   = [],
+  $home          = "/home/${title}",
+  $manage_home   = true,
+  $packages      = [],
+  $password      = 'system-hash',
+  $shell         = '/usr/bin/bash',
+
+  # user cron jobs
+  $cron_jobs     = {},
+  $cron_defaults = {
+    user        => $title,
+    target      => $title,
+    environment => 'PATH=/home/andrew/bin:/usr/local/bin:/usr/bin:/bin' },
 
   # vcsh config setup
-  $repo        = undef
+  $repo          = undef
   ) {
 
   include person
 
   ensure_packages($packages)
+
+  create_resources(cron, $cron_jobs, $cron_defaults)
 
   group { $make_groups:
     ensure => present,
