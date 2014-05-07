@@ -7,6 +7,7 @@ define person::user(
   $packages    = [],
   $password    = 'plaintext',
   $shell       = '/usr/bin/bash',
+  $make_groups   = [],
 
   # vcsh config setup
   $repo        = undef
@@ -16,7 +17,7 @@ define person::user(
 
   ensure_packages($packages)
 
-  group { $groups:
+  group { $make_groups:
     ensure => present,
   }
 
