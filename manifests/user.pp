@@ -17,7 +17,7 @@ define person::user(
     environment => 'PATH=/home/andrew/bin:/usr/local/bin:/usr/bin:/bin' },
 
   # vcsh config setup
-  $repo          = undef
+  $repo          = false
   ) {
 
   include person
@@ -41,7 +41,7 @@ define person::user(
     shell      => $shell,
   }
 
-  if $person::manage_vcsh and $repo != undef {
+  if $repo {
 
     Exec {
       path        => ['/bin', '/usr/bin'],
