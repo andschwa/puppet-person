@@ -2,7 +2,7 @@ define person::user(
   $user          = $title,
   $fullname      = $title,
   $groups        = $title,
-  $make_groups   = [],
+  $make_groups   = [$title],
   $home          = "/home/${title}",
   $manage_home   = true,
   $packages      = [],
