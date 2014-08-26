@@ -7,7 +7,7 @@ define person::user(
   $manage_home   = true,
   $packages      = [],
   $password      = 'system-hash',
-  $shell         = '/usr/bin/bash',
+  $shell         = '/bin/bash',
 
   # user cron jobs
   $cron_jobs     = {},
